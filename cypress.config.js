@@ -1,5 +1,5 @@
 const { defineConfig } = require("cypress");
-
+//npx cypress run --record --key f8f2ddff-3bbc-4db8-909e-ce8eaf172b37
 module.exports = defineConfig({
     viewportWidth: 1920,
     viewportHeight: 1080,
@@ -12,7 +12,7 @@ module.exports = defineConfig({
     watchForFileChanges: false,
     retries: { "openMode": 0, "runMode": 1 },
     pageLoadTimeout: 20000,
-    projectId: "pu82hs",
+    projectId: "thpbcj",
     reporter: 'cypress-mochawesome-reporter',
     reporterOptions: {
         // charts: true,
