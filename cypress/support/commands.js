@@ -31,11 +31,11 @@ Cypress.Commands.add('login', (username, password) => {
     cy.session(
         [username, password],
         () => {
-            cy.visit('/')
+            cy.visit('/auth/login')
             cy.get(LoginPage.usernameInput).type(username)
             cy.get(LoginPage.passwordInput).type(password)
             cy.get(LoginPage.loginButton).click()
-            cy.get(MainPage.cartButton).should('be.visible')            
+            cy.get(MainPage.cartButton).should('be.visible')
         }
     )
 
