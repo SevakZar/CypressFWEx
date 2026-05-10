@@ -23,7 +23,7 @@ describe('Authentication Tests', { tags: ['@ui'] }, () => {
     context("When user is logged out", () => {
         beforeEach(() => {
             cy.step("GIVEN I'm in Login page")
-            cy.visit('/')
+            cy.visit('/auth/login')
         })
         it('Should login with valid credentials', { tags: ['@smoke', '@regression'] }, () => {
             cy.step("WHEN I put valid credentials and click the Login button")
@@ -58,7 +58,7 @@ describe('Authentication Tests', { tags: ['@ui'] }, () => {
     context("When user is logged in", () => {
         beforeEach(() => {
             cy.step("GIVEN I'm logged in")
-            cy.visit('/')
+            cy.visit('/auth/login')
             cy.login(username, password)
 
         })
