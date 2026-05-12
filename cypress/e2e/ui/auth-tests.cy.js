@@ -5,14 +5,19 @@ import LoginPage from "../../support/page-objects/login-page"
 import MainPage from "../../support/page-objects/main-page"
 
 // Configurations
-let username
+let email
 let password
+const userKey = 'customer' //LoginUserAS
 
 before(() => {
-    cy.env(['username', 'password']).then((env) => {
-        username = env.username
-        password = env.password
-    })
+    // cy.env('users').then((users) => {  //not in before
+    //     const user = users[userKey]
+    //     email = user.email
+    //     password = user.password
+    // })
+    const user = Cypress.env('users')[userKey]
+    email = user.email
+    password = user.password
 })
 
 /**
@@ -27,7 +32,7 @@ describe('Authentication Tests', { tags: ['@ui'] }, () => {
         })
         it('Should login with valid credentials', { tags: ['@smoke', '@regression'] }, () => {
             cy.step("WHEN I put valid credentials and click the Login button")
-            cy.get(LoginPage.usernameInput).type(username)
+            cy.get(LoginPage.usernameInput).type(email)
             cy.get(LoginPage.passwordInput).type(password)
             cy.get(LoginPage.loginButton).click()
             cy.step("THEN I should login successfully")
@@ -59,8 +64,7 @@ describe('Authentication Tests', { tags: ['@ui'] }, () => {
         beforeEach(() => {
             cy.step("GIVEN I'm logged in")
             cy.visit('/auth/login')
-            cy.login(username, password)
-
+            cy.loginAs(userKey)
         })
 
         it('Should be able to logout', { tags: ['@regression'] }, () => {
