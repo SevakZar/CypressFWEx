@@ -27,25 +27,34 @@
 import LoginPage from "./page-objects/login-page"
 import MainPage from "./page-objects/main-page"
 
-Cypress.Commands.add('login', (username, password) => {
+Cypress.Commands.add('login', (email, password) => {
     cy.session(
-        [username, password],
+        [email, password],
         () => {
             cy.visit('/auth/login')
-            cy.get(LoginPage.usernameInput).type(username)
+            cy.get(LoginPage.usernameInput).type(email)
             cy.get(LoginPage.passwordInput).type(password)
             cy.get(LoginPage.loginButton).click()
             cy.get(MainPage.cartButton).should('be.visible')
         }
     )
-
-    // cy.visit('/')
-    // cy.get('body').then(($body) => {
-    //     if ($body.find(MainPage.cartButton).length === 0) {
-    //         cy.get(LoginPage.usernameInput).should('be.visible').type(username)
-    //         cy.get(LoginPage.passwordInput).type(password)
-    //         cy.get(LoginPage.loginButton).click()
-    //     }
-    // })
-    // cy.get(MainPage.cartButton, { timeout: 10000 }).should('be.visible')
 })
+
+Cypress.Commands.add('loginAs', (userKey) => {
+    const users = Cypress.env('users') // fetch all users from cypress.env.json
+    const user = users[userKey] // pick the user by key (like 'customer', 'admin')
+    if (!user) {
+        throw new Error(`User "${userKey}" not found in cypress.env.json`)
+    }
+    cy.login(user.email, user.password)
+})
+
+// cy.visit('/')
+// cy.get('body').then(($body) => {
+//     if ($body.find(MainPage.cartButton).length === 0) {
+//         cy.get(LoginPage.usernameInput).should('be.visible').type(username)
+//         cy.get(LoginPage.passwordInput).type(password)
+//         cy.get(LoginPage.loginButton).click()
+//     }
+// })
+// cy.get(MainPage.cartButton, { timeout: 10000 }).should('be.visible')
