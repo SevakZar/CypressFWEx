@@ -1,7 +1,7 @@
 class MainPage {
     // Header
-    static cartButton = '[data-test="shopping-cart-link"]'
-    static menuButton = "#react-burger-menu-btn"
+    static userMenuButton = '[data-testid="nav-user-menu"]'
+    static cartButton = '[data-testid="nav-cart"]'
     static cartBadge = '[data-test="page-title"]'
 
     // Products
@@ -12,8 +12,9 @@ class MainPage {
     // Menu button
     static allItemsButton = "#inventory_sidebar_link"
     static aboutButton = "#about_sidebar_link"
-    static logoutButton = "#logout_sidebar_link"
+    static logoutButton = '[data-testid="nav-logout"]'
     static closeMenuButton = "#react-burger-cross-btn"
+    static userButton = '[data-id="user-avatar"]'
 
 }
 
