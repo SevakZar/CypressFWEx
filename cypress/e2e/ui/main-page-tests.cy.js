@@ -7,16 +7,7 @@ import CartPage from "../../support/page-objects/cart-page"
 import CheckoutPage from "../../support/page-objects/checkout-page"
 
 // Configurations
-let username
-let password
-
-before(() => {
-    cy.section("Suite Setup")
-    cy.env(['username', 'password']).then((env) => {
-        username = env.username
-        password = env.password 
-    })
-})
+const userKey = 'customer' //LoginUserAS
 
 /**
  * Used cy.section() for distinguish between test stages
@@ -28,10 +19,76 @@ describe('Main Page Tests', { tags: ['@ui'] }, () => {
     beforeEach(() => {
         cy.section("Test Setup")
         cy.step("ARRANGE: Login user and visit home page")
-        cy.login(username, password)
-        cy.visit('/inventory.html', {failOnStatusCode: false})
-        
+        cy.loginAs(userKey)
+        cy.visit('/') // {failOnStatusCode: false})  ?????
     })
+
+    it('Display products on home page - Question 4', { tags: ['@smoke', '@regression'] }, () => {
+        cy.section("Test Body")
+        cy.step("ASSERT: Product should be visible")
+        cy.get(MainPage.productCard).should('have.length.at.least', 9)
+            .each(($card) => {
+                cy.step("ASSERT: product Name should be visible")
+                cy.wrap($card)
+                    .find(MainPage.productName)
+                    .should('be.visible')
+                    .and('not.be.empty')
+                cy.step("ASSERT: product Price should be visible")
+                cy.wrap($card)
+                    .find(MainPage.itemPrice)
+                    .should('be.visible')
+                    .and('not.be.empty')
+            })
+    })
+
+    it('Product search with valid keyword - Question 5', { tags: ['@smoke', '@regression'] }, () => {
+        cy.section("Test Body")
+        cy.step("ACT: Enter hammer in search box")
+        cy.get(MainPage.searchQuery).click().type("hammer") //shorter version: .type("hammer{enter}")
+        cy.get(MainPage.searchButton).click()
+        cy.get(MainPage.productCard).should('have.length.at.least', 0)
+            .each(($card) => {
+                cy.step("ASSERT: product Name should contain hammer")
+                cy.wrap($card)
+                    .find(MainPage.productName)
+                    .should(($name) => {
+                        expect($name.text().toLowerCase()).to.contain('hammer')
+                        //expect($el.text()).to.match(/drill/i) // which one is better?????
+                    })
+            })
+    })
+                    /*So yes — once you need transformations like:
+                        lowercase
+                        trim
+                        regex
+                        split
+                        parsing
+                        you usually switch to callback style with expect().*/
+
+
+    it.only('Filter products by category - Question 6', { tags: ['@smoke', '@regression'] }, () => {
+        cy.section("Test Body")
+        cy.step("ACT: Select Drills (or Power Tools) from the category filter")   
+        cy.get('[data-id="filter-category-power-tools"]').click()
+        cy.get(MainPage.productCard).should('have.length.at.least', 0)
+            .each(($card) => {
+                cy.step("ASSERT: filtered product Name should contain drill")
+                cy.wrap($card)
+                    .find(MainPage.productName)
+                    .should(($name) => {
+                        expect($name.text().toLowerCase()).to.contain('drill')
+                    })
+            })
+    })
+
+
+
+
+
+
+
+
+
 
     it('Should be able to add a product to the cart', { tags: ['@smoke', '@regression'] }, () => {
         cy.section("Test Body")
