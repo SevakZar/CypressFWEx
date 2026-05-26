@@ -10,11 +10,6 @@ let password
 const userKey = 'customer' //LoginUserAS
 
 before(() => {
-    // cy.env('users').then((users) => {  //not in before
-    //     const user = users[userKey]
-    //     email = user.email
-    //     password = user.password
-    // })
     const user = Cypress.env('users')[userKey]
     email = user.email
     password = user.password
