@@ -34,8 +34,11 @@ Cypress.Commands.add('login', (email, password) => {
             cy.visit('/auth/login')
             cy.get(LoginPage.usernameInput).type(email)
             cy.get(LoginPage.passwordInput).type(password)
-            cy.get(LoginPage.loginButton).click()
-            cy.get(MainPage.cartButton).should('be.visible')
+            cy.get(LoginPage.loginSubmitButton).click()
+            if (email == "admin@automationcamp.org") 
+                {cy.get('[data-testid="nav-dashboard"]').should('be.visible')}
+            else
+                {cy.get(MainPage.userButton).should('be.visible')}
         }
     )
 })
@@ -54,7 +57,7 @@ Cypress.Commands.add('loginAs', (userKey) => {
 //     if ($body.find(MainPage.cartButton).length === 0) {
 //         cy.get(LoginPage.usernameInput).should('be.visible').type(username)
 //         cy.get(LoginPage.passwordInput).type(password)
-//         cy.get(LoginPage.loginButton).click()
+//         cy.get(LoginPage.loginSubmitButton).click()
 //     }
 // })
 // cy.get(MainPage.cartButton, { timeout: 10000 }).should('be.visible')
