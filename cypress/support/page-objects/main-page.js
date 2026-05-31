@@ -10,6 +10,7 @@ class MainPage {
     static productCard = '[data-testid="product-card"]'
     static productName = '[data-testid="product-name"]'
     static itemPrice = '[data-testid="product-price"]'
+    static productCategory = '[data-testid="product-category"]'
     //static addToCartButton = (name) => `[data-test="add-to-cart-sauce-labs-${name}"]`
     //static removeFromCartButton = (name) => `[data-test="remove-sauce-labs-${name}"]`
 

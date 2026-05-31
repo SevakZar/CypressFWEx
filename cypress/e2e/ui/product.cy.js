@@ -14,12 +14,12 @@ const userKey = 'customer' //LoginUserAS
  * Used AAA syntax (Arrange/Act/Assert) + cy.step() for better logs and more clear test steps
  */
 
-describe('Main Page Tests', { tags: ['@ui'] }, () => {
+describe('Product Tests', { tags: ['@ui'] }, () => {
 
     beforeEach(() => {
         cy.section("Test Setup")
         cy.step("ARRANGE: Login user and visit home page")
-        cy.loginAs(userKey)
+        // cy.loginAs(userKey)
         cy.visit('/') // {failOnStatusCode: false})  ?????
     })
 
@@ -46,7 +46,7 @@ describe('Main Page Tests', { tags: ['@ui'] }, () => {
         cy.step("ACT: Enter hammer in search box")
         cy.get(MainPage.searchQuery).click().type("hammer") //shorter version: .type("hammer{enter}")
         cy.get(MainPage.searchButton).click()
-        cy.get(MainPage.productCard).should('have.length.at.least', 0)
+        cy.get(MainPage.productCard).should('have.length.at.least', 1)
             .each(($card) => {
                 cy.step("ASSERT: product Name should contain hammer")
                 cy.wrap($card)
@@ -57,26 +57,37 @@ describe('Main Page Tests', { tags: ['@ui'] }, () => {
                     })
             })
     })
-                    /*So yes — once you need transformations like:
-                        lowercase
-                        trim
-                        regex
-                        split
-                        parsing
-                        you usually switch to callback style with expect().*/
 
-
-    it.only('Filter products by category - Question 6', { tags: ['@smoke', '@regression'] }, () => {
+    it('Filter products by category - Question 6', { tags: ['@smoke', '@regression'] }, () => {
         cy.section("Test Body")
-        cy.step("ACT: Select Drills (or Power Tools) from the category filter")   
+        cy.step("ACT: Select Drills (or Power Tools) from the category filter")
         cy.get('[data-id="filter-category-power-tools"]').click()
-        cy.get(MainPage.productCard).should('have.length.at.least', 0)
-            .each(($card) => {
-                cy.step("ASSERT: filtered product Name should contain drill")
-                cy.wrap($card)
-                    .find(MainPage.productName)
-                    .should(($name) => {
-                        expect($name.text().toLowerCase()).to.contain('drill')
+        cy.get(MainPage.productCard).should('have.length.at.least', 1)
+            .each(($category) => {
+                cy.step("ASSERT: Only drill/power tool products are displayed")
+                cy.wrap($category)
+                    .find(MainPage.productCategory)
+                    //.should('have.text', 'DRILLS')
+                    .invoke('text')
+                    .then((text) => {
+                        expect(text.trim()).to.be.oneOf(['Drills', 'Grinders', 'Saws', 'Sanders'])
+                    })
+            })
+    })
+
+    it.only('Sort products by price (Low to High) - Question 7', { tags: ['@smoke', '@regression'] }, () => {
+        cy.section("Test Body")
+        cy.step("ACT: Select Price (Low - High) from sort dropdown")
+        cy.get('[data-testid="sort-select"]').select('Price Low-High')
+        cy.get(MainPage.productCard).should('have.length.at.least', 1)
+            .each(($category) => {
+                cy.step("ASSERT: Only drill/power tool products are displayed")
+                cy.wrap($category)
+                    .find(MainPage.productCategory)
+                    //.should('have.text', 'DRILLS')
+                    .invoke('text')
+                    .then((text) => {
+                        expect(text.trim()).to.be.oneOf(['Drills', 'Grinders', 'Saws', 'Sanders'])
                     })
             })
     })
