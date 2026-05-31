@@ -30,9 +30,9 @@
   },
   "devDependencies": {
     "@4tw/cypress-drag-drop": "^2.3.1",
-    "@bahmutov/cy-grep": "^3.0.4",
     "@bahmutov/cy-api": "^2.3.0",
-    "cypress": "15.14.1",
+    "@bahmutov/cy-grep": "^3.0.4",
+    "cypress": "^15.14.1",
     "cypress-if": "^1.13.2",
     "cypress-map": "^1.56.0",
     "cypress-mochawesome-reporter": "^4.0.2",
