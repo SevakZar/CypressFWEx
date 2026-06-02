@@ -3,14 +3,19 @@
 // Page objects
 import LoginPage from "../../support/page-objects/login-page"
 import MainPage from "../../support/page-objects/main-page"
-import CartPage from "../../support/page-objects/cart-page"
-import CheckoutPage from "../../support/page-objects/checkout-page"
 
 // Configurations
+let email
+let password
 const userKey = 'admin' //LoginUserAS
 const newBrand = 'Question 14 Brand'
 const newProductName = 'Question 15 Product'
 const invoiceNumber = 'INV-2024-0003'
+const editUser = 'customer3@automationcamp.org'
+const userKeyeditUser = 'customer3'
+const user = Cypress.env('users')[userKeyeditUser]
+email = user.email
+password = user.password
 
 /**
  * Used cy.section() for distinguish between test stages
@@ -77,7 +82,7 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
 
         cy.step("ASSERT: New product is created and appears in the products list")
         cy.get('[data-testid="search-products"]').type(`${newProductName}{enter}`)
-        //should('contain', newProductName)
+        cy.contains(newProductName).should('be.visible')
 
     })
 
@@ -102,16 +107,55 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
         cy.wait('@updateInvoice').its('response.statusCode').should('eq', 200)
 
         cy.step("ASSERT: New product is created and appears in the products list")
-        cy.contains(invoiceNumber).parent().find('[data-id="order-status"]').should('have.text','SHIPPED')
+        cy.contains(invoiceNumber).parent().find('[data-id="order-status"]').should('have.text', 'SHIPPED')
+    })
+
+    it('Disable user account - Question 17', { tags: ['@smoke', '@regression'] }, () => {
+
+        cy.section("Test Body")
+
+
+        cy.step("ACT: Navigate to /admin/users")
+        cy.visit('/admin/users')
+
+        cy.step("ACT: Edit customer3@automationcamp.org")
+        cy.contains(editUser).parent().find('[data-testid="edit-user"]').click()
+
+        cy.step("ACT: Set account to disabled")
+        cy.get('[data-testid="enabled"]').uncheck()
+
+        cy.step("ACT: Save")
+        cy.get('[data-testid="submit-user"]').click()
+
+        cy.step("ASSERT: User account is disabled")
+        cy.get('[data-testid="search-users"]').type(`${editUser}{enter}`)
+        cy.contains(editUser).should('be.visible')
+            .parent().find('[data-id="btn-toggle-user-status"]').and('have.text', 'Disabled')
+
+        cy.step("ACT: login attempt")
+        cy.visit('/')
+        cy.get(MainPage.userMenuButton).click()
+        cy.get(MainPage.logoutButton).click()
+        cy.visit('/auth/login')
+        cy.get(LoginPage.usernameInput).type(email)
+        cy.get(LoginPage.passwordInput).type(password)
+        cy.get(LoginPage.loginSubmitButton).click()
+        cy.get('[data-testid="login-error"]').should('be.visible').and('have.text', 'Your account has been disabled.')
+
+
+        //login attempt shows an appropriate error or is rejected
+
     })
 
     after(() => {
+        cy.loginAs(userKey)
+
         cy.section("Test Rollback Brand")
         cy.step("ACT: Navigate to /admin/brands")
         cy.visit('/admin/brands')
 
-        cy.intercept('GET', '/api/brands').as('brands')
-        cy.wait('@brands').its('response.statusCode').should('eq', 304)
+        /*cy.intercept('GET', '/api/brands').as('brands')
+        cy.wait('@brands').its('response.statusCode').should('eq', 304)*/
 
         cy.step("ACT: Delete inserted Brand")
         cy.window().then((win) => {
@@ -126,7 +170,7 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
         })
         cy.step("ASSERT: new product Deleted Successfully")
         cy.get('body').should('not.contain', newBrand)
-        
+
         ////////////////////////////////////////////////////////////////////////////////////////
 
         cy.section("Test Rollback product")
@@ -172,6 +216,26 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
         cy.wait('@updateInvoice').its('response.statusCode').should('eq', 200)
 
         cy.step("ASSERT: New product is created and appears in the products list")
-        cy.contains(invoiceNumber).parent().find('[data-id="order-status"]').should('have.text','ON HOLD')
+        cy.contains(invoiceNumber).parent().find('[data-id="order-status"]').should('have.text', 'ON HOLD')
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        cy.section("Test Rollback Disable user account")
+        cy.step("ACT: Navigate to /admin/users")
+        cy.visit('/admin/users')
+
+        cy.step("ACT: Edit customer3@automationcamp.org")
+        cy.contains(editUser).parent().find('[data-testid="edit-user"]').click()
+
+        cy.step("ACT: Set account to disabled")
+        cy.get('[data-testid="enabled"]').check()
+
+        cy.step("ACT: Save")
+        cy.get('[data-testid="submit-user"]').click()
+
+        cy.step("ASSERT: User account is disabled")
+        cy.get('[data-testid="search-users"]').type(`${editUser}{enter}`)
+        cy.contains(editUser).should('be.visible')
+            .parent().find('[data-id="btn-toggle-user-status"]').and('have.text', 'Active')
+
     })
 })
