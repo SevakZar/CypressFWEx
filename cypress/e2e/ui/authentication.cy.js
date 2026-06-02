@@ -81,7 +81,7 @@ describe('Authentication Tests', { tags: ['@ui'] }, () => {
         const newRegisterPass = 'NewPass12345'
         const emailInput = "New1@automationcamp.org"
 
-        it('Successful user registration - Question 3', { tags: ['@regression'] }, () => {
+        it.only('Successful user registration - Question 3', { tags: ['@regression'] }, () => {
             cy.step("GIVEN I am on the home page")
             cy.visit('/')
             cy.step("WHEN I complete the registration fields")
@@ -110,9 +110,10 @@ describe('Authentication Tests', { tags: ['@ui'] }, () => {
 
             cy.step("WHEN I delete the created user")
             cy.on('window:confirm', (text) => {
-                expect(text).to.contains('Delete this user?')
+                expect(text).to.contain('Delete this user?')
                 return true
             })
+
             cy.contains(emailInput).parent().within(() => {
                 cy.get(LoginPage.deleteUser).click()
             })
