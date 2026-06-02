@@ -25,6 +25,7 @@ class MainPage {
 
     static userButton = '[data-id="user-avatar"]'
     static logoutButton = '[data-testid="nav-logout"]'
+    static favoritesButton = '[data-id="nav-account-favorites"]'
     //static closeMenuButton = "#react-burger-cross-btn"
 
 
