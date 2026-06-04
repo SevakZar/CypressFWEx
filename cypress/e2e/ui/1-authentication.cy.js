@@ -81,7 +81,7 @@ describe('Authentication Tests', { tags: ['@ui'] }, () => {
         const newRegisterPass = 'NewPass12345'
         const emailInput = "New1@automationcamp.org"
 
-        it.only('Successful user registration - Question 3', { tags: ['@regression'] }, () => {
+        it('Successful user registration - Question 3', { tags: ['@regression'] }, () => {
             cy.step("GIVEN I am on the home page")
             cy.visit('/')
             cy.step("WHEN I complete the registration fields")

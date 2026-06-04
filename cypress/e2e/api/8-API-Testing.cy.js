@@ -14,7 +14,7 @@ let paymentMehtod
 let addProductToCart
 
 
-describe('Typicode API Negative Tests', { tags: ['@api'] }, () => {
+describe('API Tests', { tags: ['@api'] }, () => {
     context('Product Fetch test Q 18', () => {
         it('GET all products - Question 18', { tags: ['@smoke'] }, () => {
             const limit = 26
