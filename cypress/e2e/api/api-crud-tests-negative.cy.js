@@ -1,48 +1,226 @@
 /// <reference types="cypress" />
 
-// Typicode API Negative Testing
+// Configurations
 const baseUrl = Cypress.config('ApiBaseUrl')
+const userKey = 'admin'
+
+const newProductName = 'Question 19 Product'
 
 describe('Typicode API Negative Tests', { tags: ['@api'] }, () => {
-
     context('CREATE - Negative Tests', () => {
-
-        it('Should fail when creating post with empty body', { tags: ['@smoke'] }, () => {
+        it('GET all products - Question 18', { tags: ['@smoke'] }, () => {
+            const limit = 26
             cy.api({
-                method: 'POST',
-                url: `${baseUrl}/posts`,
+                method: 'GET',
+                url: `${baseUrl}/products?_sort=name&_order=asc&_page=1&_limit=${limit}`,
                 body: {},
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8'
                 },
                 failOnStatusCode: false
-            }).then((response) => {
-                expect(response.status).to.eq(201)
-                // Typicode doesn't validate required fields, it still creates
-                expect(response.body).to.have.property('id')
+            }).then(({ status, body }) => {
+                expect(status).to.eq(200)
+                expect(body.total).to.be.lessThan(limit) // it check all the products have been checked
+                //cy.wrap(body.data).each((product, index) => {
+                body.data.forEach((product, index) => {
+                    //cy.step(`ASSERT : Product #${index + 1}: ${product.name}`)//I want a clean logging so i use Cypress.log to make all ASYNC
+                    Cypress.log({
+                        name: 'PRODUCT',
+                        message: `${index + 1}: ${product.name}`
+                    })
+                    expect(product.id, 'product id').to.be.a('string').and.not.be.empty
+                    expect(product.name, 'product name').to.be.a('string').and.not.be.empty
+                    expect(product.price, 'product price').to.be.a('number')
+                })
             })
         })
 
-        it('Should fail when creating post with invalid data types', () => {
-            const invalidPost = {
-                title: 12345, // Should be string
-                body: true,   // Should be string
-                userId: 'not-a-number' // Should be number
+        it('POST create product (Admin) - Question 19', () => {
+            let accessToken
+            const addProduct = {
+                name: "Question 19 Product",
+                description: "",
+                price: 10,
+                stock: 3, "brand_id": "brand-1",
+                category_id: "cat-2",
+                co2_rating: "C",
+                is_rental: false,
+                is_location_offer: false,
+                image: "",
+                specs: []
             }
+            cy.loginAsAPI(userKey).then((response) => {
+                accessToken = 'Bearer ' + response.body.access_token
+                cy.api({
+                    method: 'POST',
+                    url: `${baseUrl}/products`,
+                    body: addProduct,
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                        'Authorization': accessToken
+                    },
+                    failOnStatusCode: false
+                }).then((response) => {
+                    // Typicode is permissive, but we're testing behavior
+                    expect(response.status).to.eq(201)
+                    const newProductId = response.body.id
+                    cy.api({
+                        method: 'GET',
+                        url: `${baseUrl}/products/${newProductId}`,
+                        body: {},
+                        headers: {
+                            'Content-type': 'application/json; charset=UTF-8',
+                            'Authorization': accessToken
+                        },
+                        failOnStatusCode: false
+                    }).then((response) => {
+                        // Typicode is permissive, but we're testing behavior
+                        expect(response.status).to.eq(200)
+                    })
+                    cy.api({
+                        method: 'DELETE',
+                        url: `${baseUrl}/products/${newProductId}`,
+                        body: {},
+                        headers: {
+                            'Content-type': 'application/json; charset=UTF-8',
+                            'Authorization': accessToken
+                        },
+                        failOnStatusCode: false
+                    }).then((response) => {
+                        // Typicode is permissive, but we're testing behavior
+                        expect(response.status).to.eq(204)
+                    })
+                })
 
-            cy.api({
-                method: 'POST',
-                url: `${baseUrl}/posts`,
-                body: invalidPost,
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8'
-                },
-                failOnStatusCode: false
-            }).then((response) => {
-                // Typicode is permissive, but we're testing behavior
-                expect(response.status).to.eq(201)
             })
         })
+
+        it('PUT update product (Admin) - Question 20', () => {
+            let accessToken
+            const ProductId = "prod-9"
+            const UpdateProduct = { price: 29.99 }
+            cy.loginAsAPI(userKey).then((response) => {
+                accessToken = 'Bearer ' + response.body.access_token
+
+                cy.api({
+                    method: 'PUT',
+                    url: `${baseUrl}/products/${ProductId}`,
+                    body: UpdateProduct,
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                        'Authorization': accessToken
+                    },
+                    failOnStatusCode: false
+                }).then((response) => {
+                    // Typicode is permissive, but we're testing behavior
+                    expect(response.status).to.eq(200)
+                })
+                cy.api({
+                    method: 'GET',
+                    url: `${baseUrl}/products/${ProductId}`,
+                    body: {},
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                        'Authorization': accessToken
+                    },
+                    failOnStatusCode: false
+                }).then((response) => {
+                    // Typicode is permissive, but we're testing behavior
+                    expect(response.status).to.eq(200)
+                    expect(response.body.price).to.eq(29.99)
+                })
+                cy.api({
+                    method: 'PUT',
+                    url: `${baseUrl}/products/${ProductId}`,
+                    body: { price: 29.9 },
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                        'Authorization': accessToken
+                    },
+                    failOnStatusCode: false
+                }).then((response) => {
+                    // Typicode is permissive, but we're testing behavior
+                    expect(response.status).to.eq(200)
+                })
+            })
+        })
+
+        it.only('DELETE product (Admin) - Question 21', () => {
+            let accessToken
+            const addProduct = {
+                name: "Question 19 Product",
+                description: "",
+                price: 10,
+                stock: 3, "brand_id": "brand-1",
+                category_id: "cat-2",
+                co2_rating: "C",
+                is_rental: false,
+                is_location_offer: false,
+                image: "",
+                specs: []
+            }
+            cy.loginAsAPI(userKey).then((response) => {
+                accessToken = 'Bearer ' + response.body.access_token
+                cy.api({
+                    method: 'POST',
+                    url: `${baseUrl}/products`,
+                    body: addProduct,
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                        'Authorization': accessToken
+                    },
+                    failOnStatusCode: false
+                }).then((response) => {
+                    // Typicode is permissive, but we're testing behavior
+                    expect(response.status).to.eq(201)
+                    const newProductForDeleteId = response.body.id
+                    cy.api({
+                        method: 'DELETE',
+                        url: `${baseUrl}/products/${newProductForDeleteId}`,
+                        body: {},
+                        headers: {
+                            'Content-type': 'application/json; charset=UTF-8',
+                            'Authorization': accessToken
+                        },
+                        failOnStatusCode: false
+                    }).then((response) => {
+                        // Typicode is permissive, but we're testing behavior
+                        expect(response.status).to.eq(204)
+                    })
+                    cy.api({
+                        method: 'GET',
+                        url: `${baseUrl}/products/${newProductForDeleteId}`,
+                        body: {},
+                        headers: {
+                            'Content-type': 'application/json; charset=UTF-8',
+                            'Authorization': accessToken
+                        },
+                        failOnStatusCode: false
+                    }).then((response) => {
+                        // Typicode is permissive, but we're testing behavior
+                        expect(response.status).to.eq(404)
+                        expect(response.body.message).to.eq("Product not found")
+                    })
+                })
+            })
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         it('Should handle POST request with extremely large payload', () => {
             const largePost = {

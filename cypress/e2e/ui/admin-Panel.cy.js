@@ -4,18 +4,18 @@
 import LoginPage from "../../support/page-objects/login-page"
 import MainPage from "../../support/page-objects/main-page"
 
-// Configurations
-let email
-let password
+// Auth Configurations 
 const userKey = 'admin' //LoginUserAS
+const userKeyeditUser = 'customer3'
+const user = Cypress.env('users')[userKeyeditUser]
+let email = user.email
+let password = user.password
+
+// Test Configurations 
 const newBrand = 'Question 14 Brand'
 const newProductName = 'Question 15 Product'
 const invoiceNumber = 'INV-2024-0003'
 const editUser = 'customer3@automationcamp.org'
-const userKeyeditUser = 'customer3'
-const user = Cypress.env('users')[userKeyeditUser]
-email = user.email
-password = user.password
 
 /**
  * Used cy.section() for distinguish between test stages
