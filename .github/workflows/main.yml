@@ -17,8 +17,10 @@ jobs:
         browser: [electron, chrome]
 
     env:
-      CYPRESS_username: ${{ secrets.CYPRESS_USERNAME }}
-      CYPRESS_password: ${{ secrets.CYPRESS_PASSWORD }}
+      CYPRESS_ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      CYPRESS_ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      CYPRESS_CUSTOMER_EMAIL: ${{ secrets.CUSTOMER_EMAIL }}
+      CYPRESS_CUSTOMER_PASSWORD: ${{ secrets.CUSTOMER_PASSWORD }}
       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 
     steps:
