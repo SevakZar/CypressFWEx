@@ -1,58 +1,57 @@
 name: End-to-end tests
 
-# Giving proper GitHub permission for deploying on github pages
 permissions:
- contents: write
- pages: write
- id-token: write
+  contents: write
+  pages: write
+  id-token: write
 
 on: push
 
 jobs:
- cypress-run:
- runs-on: ubuntu-latest
+  cypress-run:
+    runs-on: ubuntu-latest
 
- # Make Matrix run on all browsers
- strategy:
- fail-fast: false   # Don't cancel other browser if one fails
- matrix:
- browser: [electron, chrome]
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [electron, chrome]
 
- env:
-  CYPRESS_username: ${{ secrets.CYPRESS_USERNAME }}
-  CYPRESS_password: ${{ secrets.CYPRESS_PASSWORD }}
-  CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-
-steps:
-- name: Checkout Cypress Framework
-  uses: actions/checkout@v4
-  # Install dependencies with caching
-  # and run all Cypress tests
-- name: Clone Toolshop
-  run: |
-    git clone https://github.com/automationcamp/automationcamp-toolshop.git
-
-- name: Start Toolshop
-  run: |
-    cd automationcamp-toolshop
-    npm run setup
-    npm start &
-
-- name: Wait for Toolshop
-  run: npx wait-on http://localhost:5173 --timeout 120000
-
-- name: Cypress run on ${{ matrix.browser }}
-  uses: cypress-io/github-action@v7
-  with:
-    browser: ${{ matrix.browser }}
-    record: true
-    record: true
     env:
-    CYPRESS_BROWSER: ${{ matrix.browser }}
+      CYPRESS_username: ${{ secrets.CYPRESS_USERNAME }}
+      CYPRESS_password: ${{ secrets.CYPRESS_PASSWORD }}
+      CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 
-- name: Upload Reports as Artifact
-  if: always()
-  uses: actions/upload-artifact@v4
-  with:
-  name: cypress-reports-${{ matrix.browser }}
-  path: cypress/reports
+    steps:
+      - name: Checkout Cypress Framework
+        uses: actions/checkout@v4
+
+      - name: Clone Toolshop
+        run: |
+          git clone https://github.com/automationcamp/automationcamp-toolshop.git
+
+      - name: Start Toolshop
+        run: |
+          cd automationcamp-toolshop
+          npm run setup
+          npm start &
+
+      - name: Wait for Toolshop
+        run: npx wait-on http://localhost:5173 --timeout 120000
+
+      - name: Check Toolshop
+        run: curl http://localhost:5173
+
+      - name: Cypress run on ${{ matrix.browser }}
+        uses: cypress-io/github-action@v7
+        with:
+          browser: ${{ matrix.browser }}
+          record: true
+        env:
+          CYPRESS_BROWSER: ${{ matrix.browser }}
+
+      - name: Upload Reports as Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-reports-${{ matrix.browser }}
+          path: cypress/reports
