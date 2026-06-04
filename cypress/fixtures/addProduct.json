@@ -1,0 +1,13 @@
+{
+    "name": "Question 19 Product",
+    "description": "",
+    "price": 10,
+    "stock": 3,
+    "brand_id": "brand-1",
+    "category_id": "cat-2",
+    "co2_rating": "C",
+    "is_rental": false,
+    "is_location_offer": false,
+    "image": "",
+    "specs": []
+}

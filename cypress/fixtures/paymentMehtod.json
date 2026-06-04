@@ -1,0 +1,10 @@
+{
+    "payment_details": {
+        "card_number": "1234123412341234",
+        "cvv": "555",
+        "expiry": "12/26",
+        "holder_name": "Jane Doe"
+    },
+    "payment_method": "credit_card"
+
+}
