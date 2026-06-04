@@ -28,16 +28,15 @@ steps:
   uses: actions/checkout@v4
   # Install dependencies with caching
   # and run all Cypress tests
-- name: Clone Toolshop Application
+- name: Clone Toolshop
   run: |
-  git clone https://github.com/automationcamp/automationcamp-toolshop.git
+    git clone https://github.com/automationcamp/automationcamp-toolshop.git
 
-- name: Install and Start Toolshop
+- name: Start Toolshop
   run: |
-  cd automationcamp-toolshop
-  npm run setup
-  npm start &
-
+    cd automationcamp-toolshop
+    npm run setup
+    npm start &
 
 - name: Wait for Toolshop
   run: npx wait-on http://localhost:5173 --timeout 120000
@@ -45,10 +44,11 @@ steps:
 - name: Cypress run on ${{ matrix.browser }}
   uses: cypress-io/github-action@v7
   with:
-  browser: ${{ matrix.browser }}
-  record: true
-  env:
-  CYPRESS_BROWSER: ${{ matrix.browser }}
+    browser: ${{ matrix.browser }}
+    record: true
+    record: true
+    env:
+    CYPRESS_BROWSER: ${{ matrix.browser }}
 
 - name: Upload Reports as Artifact
   if: always()
