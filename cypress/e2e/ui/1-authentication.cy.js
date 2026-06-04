@@ -109,11 +109,13 @@ describe('Authentication Tests', { tags: ['@ui'] }, () => {
             cy.visit('/admin/users')
 
             cy.step("WHEN I delete the created user")
-            cy.on('window:confirm', (text) => {
-                expect(text).to.contain('Delete this user?')
-                return true
+            cy.window().then((win) => {
+                win.confirm = ((text) => {
+                    expect(text).to.contain('Delete this user?')
+                    return true
+                })
             })
-
+            
             cy.contains(emailInput).parent().within(() => {
                 cy.get(LoginPage.deleteUser).click()
             })

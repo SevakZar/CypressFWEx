@@ -35,10 +35,8 @@ Cypress.Commands.add('login', (email, password) => {
             cy.get(LoginPage.usernameInput).type(email)
             cy.get(LoginPage.passwordInput).type(password)
             cy.get(LoginPage.loginSubmitButton).click()
-            if (email == "admin@automationcamp.org") 
-                {cy.get('[data-testid="nav-dashboard"]').should('be.visible')}
-            else
-                {cy.get(MainPage.userButton).should('be.visible')}
+            if (email == "admin@automationcamp.org") { cy.get('[data-testid="nav-dashboard"]').should('be.visible') }
+            else { cy.get(MainPage.userButton).should('be.visible') }
         }
     )
 })
@@ -50,6 +48,28 @@ Cypress.Commands.add('loginAs', (userKey) => {
         throw new Error(`User "${userKey}" not found in cypress.env.json`)
     }
     cy.login(user.email, user.password)
+})
+
+Cypress.Commands.add('loginAsAPI', (userKey) => {
+    const baseUrl = Cypress.config('ApiBaseUrl')
+    const user = Cypress.env('users')[userKey]
+
+    return cy.api({
+        method: 'POST',
+        url: `${baseUrl}/users/login`,
+        body: {
+            email: user.email,
+            password: user.password
+        },
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8'
+        }
+    }).then((response) => {
+        expect(response.status).to.eq(200)
+        //cy.wrap(response.body.access_token).as('accessToken')
+
+        return response
+    })
 })
 
 // cy.visit('/')

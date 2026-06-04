@@ -18,7 +18,7 @@ describe('Shopping cart Tests', { tags: ['@ui'] }, () => {
 
     beforeEach(() => {
         cy.section("Test Setup")
-        cy.step("ARRANGE: Login user and visit home page")
+        cy.step("ARRANGE: Without Login user, visit home page")
         // cy.loginAs(userKey)
         cy.visit('/') // {failOnStatusCode: false})  ?????
     })
@@ -82,7 +82,7 @@ describe('Shopping cart Tests', { tags: ['@ui'] }, () => {
             });
     })
 
-    it.only('Remove product from cart - Question 10', { tags: ['@smoke', '@regression'] }, () => {
+    it('Remove product from cart - Question 10', { tags: ['@smoke', '@regression'] }, () => {
         cy.section("Test Body")
 
         cy.step("ACT: Add a product to cart")
