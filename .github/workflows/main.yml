@@ -19,40 +19,40 @@ jobs:
  browser: [electron, chrome]
 
  env:
- CYPRESS_username: ${{ secrets.CYPRESS_USERNAME }}
- CYPRESS_password: ${{ secrets.CYPRESS_PASSWORD }}
- CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  CYPRESS_username: ${{ secrets.CYPRESS_USERNAME }}
+  CYPRESS_password: ${{ secrets.CYPRESS_PASSWORD }}
+  CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 
 steps:
 - name: Checkout Cypress Framework
-uses: actions/checkout@v4
- # Install dependencies with caching
- # and run all Cypress tests
+  uses: actions/checkout@v4
+  # Install dependencies with caching
+  # and run all Cypress tests
 - name: Clone Toolshop Application
-run: |
-git clone https://github.com/automationcamp/automationcamp-toolshop.git
+  run: |
+  git clone https://github.com/automationcamp/automationcamp-toolshop.git
 
 - name: Install and Start Toolshop
-run: |
-cd automationcamp-toolshop
-npm run setup
-npm start &
+  run: |
+  cd automationcamp-toolshop
+  npm run setup
+  npm start &
 
 
 - name: Wait for Toolshop
-run: npx wait-on http://localhost:5173 --timeout 120000
+  run: npx wait-on http://localhost:5173 --timeout 120000
 
 - name: Cypress run on ${{ matrix.browser }}
-uses: cypress-io/github-action@v7
-with:
-browser: ${{ matrix.browser }}
-record: true
-env:
-CYPRESS_BROWSER: ${{ matrix.browser }}
+  uses: cypress-io/github-action@v7
+  with:
+  browser: ${{ matrix.browser }}
+  record: true
+  env:
+  CYPRESS_BROWSER: ${{ matrix.browser }}
 
 - name: Upload Reports as Artifact
-if: always()
-uses: actions/upload-artifact@v4
-with:
-name: cypress-reports-${{ matrix.browser }}
-path: cypress/reports
+  if: always()
+  uses: actions/upload-artifact@v4
+  with:
+  name: cypress-reports-${{ matrix.browser }}
+  path: cypress/reports
