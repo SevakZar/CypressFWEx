@@ -40,4 +40,5 @@ describe('Contact Form Tests', { tags: ['@ui'] }, () => {
         cy.get('[data-id="contact-success-title"]').should('be.visible').and('have.text','Message Sent!')
 
     })
+    
 })

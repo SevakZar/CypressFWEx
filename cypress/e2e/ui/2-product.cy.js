@@ -5,6 +5,7 @@ import LoginPage from "../../support/page-objects/login-page"
 import MainPage from "../../support/page-objects/main-page"
 import CartPage from "../../support/page-objects/cart-page"
 import CheckoutPage from "../../support/page-objects/checkout-page"
+import { getDollarAmount } from "../../support/utils"
 
 // Configurations
 const userKey = 'customer' //LoginUserAS
@@ -18,7 +19,7 @@ describe('Product Tests', { tags: ['@ui'] }, () => {
 
     beforeEach(() => {
         cy.section("Test Setup")
-        cy.step("ARRANGE: Login user and visit home page")
+        cy.step("ARRANGE: Without Login user, visit home page")
         // cy.loginAs(userKey)
         cy.visit('/') // {failOnStatusCode: false})  ?????
     })
@@ -75,75 +76,26 @@ describe('Product Tests', { tags: ['@ui'] }, () => {
             })
     })
 
-    it.only('Sort products by price (Low to High) - Question 7', { tags: ['@smoke', '@regression'] }, () => {
+    it('Sort products by price (Low to High) - Question 7', { tags: ['@smoke', '@regression'] }, () => {
         cy.section("Test Body")
+        cy.intercept('GET', '/api/products?_sort=price&_order=asc&_page=1&_limit=9').as('priceSort') //the response time has delayed
         cy.step("ACT: Select Price (Low - High) from sort dropdown")
         cy.get('[data-testid="sort-select"]').select('Price Low-High')
-        cy.get(MainPage.productCard).should('have.length.at.least', 1)
-            .each(($category) => {
-                cy.step("ASSERT: Only drill/power tool products are displayed")
-                cy.wrap($category)
-                    .find(MainPage.productCategory)
-                    //.should('have.text', 'DRILLS')
-                    .invoke('text')
-                    .then((text) => {
-                        expect(text.trim()).to.be.oneOf(['Drills', 'Grinders', 'Saws', 'Sanders'])
-                    })
+        cy.wait('@priceSort').its('response.statusCode').should('be.oneOf', [200, 304])
+        
+        cy.step("ASSERT: Products are sorted with lowest price first (e.g. Retractable Tape Measure 8m at $8.99 near the top)")
+        cy.get(MainPage.itemPrice).should('have.length.at.least', 1)
+            .then(($prices) => {
+                const actualPrices = [...$prices].map(el =>
+                    getDollarAmount(Cypress.$(el))
+                )
+                const expectedPrices = [...actualPrices]
+                    .sort((a, b) => a - b)
+                expect(actualPrices).to.deep.equal(expectedPrices)
             })
+        cy.get(MainPage.productCard)
+            .first()
+            .should('contain', 'Utility Knife with 10 Blades')
+            .and('contain', '$7.99')
     })
-
-
-
-
-
-
-
-
-
-
-    it('Should be able to add a product to the cart', { tags: ['@smoke', '@regression'] }, () => {
-        cy.section("Test Body")
-        cy.step("ACT: add an item to the cart")
-        cy.get(MainPage.addToCartButton('backpack')).click()
-        cy.get(MainPage.cartButton).should('be.visible')
-        cy.step("ASSERT: The cart badge should be updated")
-        cy.get(MainPage.cartBadge).should('contain.text', '1')
-    })
-
-    it('Should be able to remove a product from the cart', { tags: ['@regression'] }, () => {
-        cy.section("Test Body")
-        cy.step("ARRANGE: Add items to the cart")
-        cy.get(MainPage.addToCartButton('backpack')).click()
-        cy.get(MainPage.cartBadge).should('contain.text', '1')
-        cy.step("ACT: Remove item from the cart")
-        cy.get(MainPage.removeFromCartButton('backpack')).click()
-        cy.step("ASSERT: Verify cart is empty")
-        cy.get(MainPage.cartButton).should('be.visible')
-        cy.get(MainPage.cartBadge).should('not.exist')
-    })
-
-    it('Should be able to do e2e purchase flow', { tags: ['@regression'] }, () => {
-        cy.section("Test Setup")
-        cy.step("ARRANGE: Add some items to the cart")
-        const item1 = MainPage.addToCartButton('backpack')
-        const item2 = MainPage.addToCartButton('bike-light')
-        const item3 = MainPage.addToCartButton('bolt-t-shirt')
-        cy.get(item1).click()
-        cy.get(item2).click()
-        cy.get(item3).click()
-        cy.get(MainPage.cartBadge).should('contain.text', '3')
-
-        cy.section("Test Body")
-        cy.step("ACT: Conitnue with the checkout process")
-        cy.get(MainPage.cartButton).click()
-        cy.get(CartPage.checkoutButton).click()
-        cy.get(CheckoutPage.firstNameInput).type('John')
-        cy.get(CheckoutPage.lastNameInput).type('Doe')
-        cy.get(CheckoutPage.postalCodeInput).type('12345')
-        cy.get(CheckoutPage.continueButton).click()
-        cy.get(CheckoutPage.finishButton).click()
-        cy.step('ASSERT: Purchase approval and "Thank You" message should be appeard')
-        cy.get(CheckoutPage.thankYouMessage).should('be.visible')
-    })
-
 })

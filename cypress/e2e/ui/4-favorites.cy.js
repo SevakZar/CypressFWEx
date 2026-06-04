@@ -1,13 +1,11 @@
 /// <reference types="cypress" />
 
 // Page objects
-import LoginPage from "../../support/page-objects/login-page"
 import MainPage from "../../support/page-objects/main-page"
-import CartPage from "../../support/page-objects/cart-page"
-import CheckoutPage from "../../support/page-objects/checkout-page"
 
 // Configurations
 const userKey = 'customer' //LoginUserAS
+let selectedProduct
 
 /**
  * Used cy.section() for distinguish between test stages
@@ -29,15 +27,25 @@ describe('Favorites Tests', { tags: ['@ui'] }, () => {
 
         cy.step("ACT: Select the product as Favorite")
         cy.get('[data-id="product-info"]').find('[data-testid="product-name"]').invoke('text').then(($selectedProduct) => {
-            const selectedProduct = $selectedProduct;
+            selectedProduct = $selectedProduct;
             cy.get('[data-id="product-info"]').find('[data-testid="favorite-btn"]').click()
 
             cy.step("ACT: Go to user Favorite products")
             cy.get(MainPage.userMenuButton).click()
             cy.get(MainPage.favoritesButton).click()
 
-            cy.step("ASSERT: Go to user Favorite products")
+            cy.step("ASSERT: Product appears in the favorites list")
             cy.get('[data-testid="favorites-grid"]').should('contain', selectedProduct)
         })
+    })
+
+    after(() => {
+        cy.step("ACT: Go to user Favorite products")
+        cy.get(MainPage.userMenuButton).click()
+        cy.get(MainPage.favoritesButton).click()
+
+        cy.step("ASSERT: Delete Product appears in the favorites list")
+        cy.contains(selectedProduct).parent().find('[data-testid="remove-favorite"]').click()
+        cy.get('body').should('not.contain', selectedProduct)
     })
 })
