@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 // Page objects
-import MainPage from "../../support/page-objects/main-page"
+import MainPage from '../../support/page-objects/main-page'
 
 // Configurations
 const userKey = 'customer' //LoginUserAS
@@ -13,39 +13,42 @@ let selectedProduct
  */
 
 describe('Favorites Tests', { tags: ['@ui'] }, () => {
-    beforeEach(() => {
-        cy.section("Test Setup")
-        cy.step("ARRANGE: Login user and visit home page")
-        cy.loginAs(userKey)
-        cy.visit('/') // {failOnStatusCode: false})  ?????
-    })
+  beforeEach(() => {
+    cy.section('Test Setup')
+    cy.step('ARRANGE: Login user and visit home page')
+    cy.loginAs(userKey)
+    cy.visit('/') // {failOnStatusCode: false})  ?????
+  })
 
-    it('Add product to favorites (logged in) - Question 11', { tags: ['@smoke', '@regression'] }, () => {
-        cy.section("Test Body")
-        cy.step("ACT: Select a product")
-        cy.get('[data-testid="product-card"]').eq(0).click()
+  it('Add product to favorites (logged in) - Question 11', { tags: ['@smoke', '@regression'] }, () => {
+    cy.section('Test Body')
+    cy.step('ACT: Select a product')
+    cy.get('[data-testid="product-card"]').eq(0).click()
 
-        cy.step("ACT: Select the product as Favorite")
-        cy.get('[data-id="product-info"]').find('[data-testid="product-name"]').invoke('text').then(($selectedProduct) => {
-            selectedProduct = $selectedProduct;
-            cy.get('[data-id="product-info"]').find('[data-testid="favorite-btn"]').click()
+    cy.step('ACT: Select the product as Favorite')
+    cy.get('[data-id="product-info"]')
+      .find('[data-testid="product-name"]')
+      .invoke('text')
+      .then(($selectedProduct) => {
+        selectedProduct = $selectedProduct
+        cy.get('[data-id="product-info"]').find('[data-testid="favorite-btn"]').click()
 
-            cy.step("ACT: Go to user Favorite products")
-            cy.get(MainPage.userMenuButton).click()
-            cy.get(MainPage.favoritesButton).click()
-
-            cy.step("ASSERT: Product appears in the favorites list")
-            cy.get('[data-testid="favorites-grid"]').should('contain', selectedProduct)
-        })
-    })
-
-    after(() => {
-        cy.step("ACT: Go to user Favorite products")
+        cy.step('ACT: Go to user Favorite products')
         cy.get(MainPage.userMenuButton).click()
         cy.get(MainPage.favoritesButton).click()
 
-        cy.step("ASSERT: Delete Product appears in the favorites list")
-        cy.contains(selectedProduct).parent().find('[data-testid="remove-favorite"]').click()
-        cy.get('body').should('not.contain', selectedProduct)
-    })
+        cy.step('ASSERT: Product appears in the favorites list')
+        cy.get('[data-testid="favorites-grid"]').should('contain', selectedProduct)
+      })
+  })
+
+  after(() => {
+    cy.step('ACT: Go to user Favorite products')
+    cy.get(MainPage.userMenuButton).click()
+    cy.get(MainPage.favoritesButton).click()
+
+    cy.step('ASSERT: Delete Product appears in the favorites list')
+    cy.contains(selectedProduct).parent().find('[data-testid="remove-favorite"]').click()
+    cy.get('body').should('not.contain', selectedProduct)
+  })
 })

@@ -1,9 +1,43 @@
-# Cypress Test Automation Framework
+# Cypress Test Automation Practice
 
 A Cypress test automation framework designed for multi-environment testing with support for UI and API testing.
+This framework Uses as template from **https://github.com/mmonfared/cypress-framework.git** by **Moe Monfared (https://github.com/mmonfared)**
 
-Application under test: https://www.saucedemo.com/
+This FrameWork Runs Test in an Application with this specifications:
+Application under test AutomationCamp Toolshop - Practice Test Automation: 
+## Cypress \+ JavaScript Automation Framework
 
+**Template Framework:** [https://github.com/mmonfared/cypress-framework](https://github.com/mmonfared/cypress-framework)  
+**Application Under Test:** [automationcamp-toolshop](https://github.com/mmonfared/automationcamp-toolshop)
+**Frontend:** [http://localhost:5173](http://localhost:5173)  
+**API:** [http://localhost:3001/api](http://localhost:3001/api)  
+**API Status:** [http://localhost:3001/api/status](http://localhost:3001/api/status)  
+**Version:** AutomationCamp Toolshop v1.0
+
+---
+
+## App Setup
+
+```bash
+# 1. Install all dependencies
+npm run setup
+
+# 2. Start the application
+npm start
+```
+
+To reset the database to its original seed state before running tests:
+
+```bash
+npm run reset-db
+```
+Or reset and start in one command:
+```bash
+npm run reset-and-start
+```
+Once you start the application, you may open your test framework in a separate IDE instance and start writing your tests.
+
+About FrameWork (as you can See in the main Git Repository **https://github.com/mmonfared/cypress-framework.git**):
 ## 🚀 Features
 
 - **Multi-Environment Support**: Separate configurations for Dev, QA, and Production environments
@@ -45,8 +79,12 @@ cp cypress.env.json.dist cypress.env.json
 ```json
 {
     "CYPRESS_RECORD_KEY": "your-cypress-cloud-key",
-    "username": "standard_user",
-    "password": "secret_sauce"
+    "users": {
+        "usernameAsYouWant": {
+            "email": "standard_useremail",
+            "password": "secret_sauce"
+        }
+    }
 }
 ```
 
@@ -86,6 +124,7 @@ cypress-framework/
 ## 🎯 Usage
 
 ### Running Tests
+### So far it has just AN URL and there is no differnece between enviroments
 
 #### Default Environment (QA)
 ```bash
@@ -199,10 +238,12 @@ describe('Sample UI Test', { tags: ['@regression', '@ui'] }, () => {
         cy.visit('/')
     })
     
+    context('Context ofSample UI Test',()=> {
     it('Should perform login', { tags: ['@smoke'] }, () => {
         cy.get('[data-test="username"]').type('user')
         cy.get('[data-test="password"]').type('pass')
         cy.get('[data-test="login-button"]').click()
+        })
     })
 })
 ```
