@@ -45,6 +45,10 @@ module.exports = defineConfig({
                 customer: {
                     email: process.env.CYPRESS_CUSTOMER_EMAIL,
                     password: process.env.CYPRESS_CUSTOMER_PASSWORD
+                },
+                customer3: {
+                    email: process.env.CYPRESS_CUSTOMER3_EMAIL,
+                    password: process.env.CYPRESS_CUSTOMER3_PASSWORD
                 }
             }
         }
