@@ -14,7 +14,7 @@ class LoginPage {
     static firstnameInput = '[data-testid="first-name"]'
     static lastnameInput = '[data-testid="last-name"]'
     static emailInput = '[data-testid="email"]' 
-    static passwordInput = '[data-testid="password"]' 
+    static passwordInputRegister = '[data-testid="password"]' 
     static passwordConfirmInput = '[data-testid="password-confirm"]' 
     static phoneInput = '[data-testid="phone"]' 
     static dobInput = '[data-testid="dob"]' 

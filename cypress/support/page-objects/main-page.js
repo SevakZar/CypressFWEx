@@ -9,25 +9,26 @@ class MainPage {
     // Products
     static productCard = '[data-testid="product-card"]'
     static productName = '[data-testid="product-name"]'
+    static productInfo = '[data-id="product-info"]'
     static itemPrice = '[data-testid="product-price"]'
     static productCategory = '[data-testid="product-category"]'
-    //static addToCartButton = (name) => `[data-test="add-to-cart-sauce-labs-${name}"]`
-    //static removeFromCartButton = (name) => `[data-test="remove-sauce-labs-${name}"]`
+    static filterCategoryPowerTools = '[data-id="filter-category-power-tools"]'
+    static sortSelection = '[data-testid="sort-select"]'
 
-    // Menu button
-    //static allItemsButton = "#inventory_sidebar_link"
-    //static aboutButton = "#about_sidebar_link"
+    // favorite    
+    static favoriteBtn = '[data-testid="favorite-btn"]'
+    static favoriteGrid = '[data-testid="favorites-grid"]'
 
+
+    // Right Menu button
     static navProfile = '[data-testid="nav-profile"]'
     static navOrders = '[data-testid="nav-orders"]'
     static navAccountFavorites = '[data-id="nav-account-favorites"]'
     static navAccountMessages = '[data-id="nav-account-messages"]'
-
+    
     static userButton = '[data-id="user-avatar"]'
     static logoutButton = '[data-testid="nav-logout"]'
     static favoritesButton = '[data-id="nav-account-favorites"]'
-    //static closeMenuButton = "#react-burger-cross-btn"
-
 
 }
 

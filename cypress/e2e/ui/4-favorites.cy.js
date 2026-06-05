@@ -23,22 +23,22 @@ describe('Favorites Tests', { tags: ['@ui'] }, () => {
   it('Add product to favorites (logged in) - Question 11', { tags: ['@smoke', '@regression'] }, () => {
     cy.section('Test Body')
     cy.step('ACT: Select a product')
-    cy.get('[data-testid="product-card"]').eq(0).click()
+    cy.get(MainPage.productCard).eq(0).click()
 
     cy.step('ACT: Select the product as Favorite')
-    cy.get('[data-id="product-info"]')
-      .find('[data-testid="product-name"]')
+    cy.get(MainPage.productInfo)
+      .find(MainPage.productName)
       .invoke('text')
       .then(($selectedProduct) => {
         selectedProduct = $selectedProduct
-        cy.get('[data-id="product-info"]').find('[data-testid="favorite-btn"]').click()
+        cy.get(MainPage.productInfo).find(MainPage.favoriteBtn).click()
 
         cy.step('ACT: Go to user Favorite products')
         cy.get(MainPage.userMenuButton).click()
         cy.get(MainPage.favoritesButton).click()
 
         cy.step('ASSERT: Product appears in the favorites list')
-        cy.get('[data-testid="favorites-grid"]').should('contain', selectedProduct)
+        cy.get(MainPage.favoriteGrid).should('contain', selectedProduct)
       })
   })
 
