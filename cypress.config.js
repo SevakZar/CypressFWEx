@@ -23,7 +23,7 @@ module.exports = defineConfig({
         videoOnFailOnly: true,
         reportDir: `cypress/reports/mochawesome-${process.env.CYPRESS_BROWSER || 'electron'}-${new Date().toISOString().split('T')[0]}`,
         reportFilename: `report-${process.env.CYPRESS_BROWSER || 'electron'}-[datetime]`,
-  },
+    },
     e2e: {
         setupNodeEvents(on, config) {
             // Include the grep plugin
@@ -36,6 +36,18 @@ module.exports = defineConfig({
         environment: "qa",
         grepFilterSpecs: true,
         grepOmitFiltered: true,
+        env: {
+            users: {
+                admin: {
+                    email: process.env.CYPRESS_ADMIN_EMAIL,
+                    password: process.env.CYPRESS_ADMIN_PASSWORD
+                },
+                customer: {
+                    email: process.env.CYPRESS_CUSTOMER_EMAIL,
+                    password: process.env.CYPRESS_CUSTOMER_PASSWORD
+                }
+            }
+        }
     }
 });
 

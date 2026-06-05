@@ -1,6 +1,5 @@
 name: End-to-end tests
 
-# Giving proper GitHub permission for deploying on github pages
 permissions:
   contents: write
   pages: write
@@ -12,22 +11,38 @@ jobs:
   cypress-run:
     runs-on: ubuntu-latest
 
-    # Make Matrix run on all browsers
     strategy:
-      fail-fast: false   # Don't cancel other browser if one fails
+      fail-fast: false
       matrix:
         browser: [electron, chrome]
 
     env:
-      CYPRESS_username: ${{ secrets.CYPRESS_USERNAME }}
-      CYPRESS_password: ${{ secrets.CYPRESS_PASSWORD }}
+      CYPRESS_ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      CYPRESS_ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      CYPRESS_CUSTOMER_EMAIL: ${{ secrets.CUSTOMER_EMAIL }}
+      CYPRESS_CUSTOMER_PASSWORD: ${{ secrets.CUSTOMER_PASSWORD }}
       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      # Install dependencies with caching
-      # and run all Cypress tests
+      - name: Checkout Cypress Framework
+        uses: actions/checkout@v4
+
+      - name: Clone Toolshop
+        run: |
+          git clone https://github.com/automationcamp/automationcamp-toolshop.git
+
+      - name: Start Toolshop
+        run: |
+          cd automationcamp-toolshop
+          npm run setup
+          npm start &
+
+      - name: Wait for Toolshop
+        run: npx wait-on http://localhost:5173 --timeout 120000
+
+      - name: Check Toolshop
+        run: curl http://localhost:5173
+
       - name: Cypress run on ${{ matrix.browser }}
         uses: cypress-io/github-action@v7
         with:
@@ -35,10 +50,10 @@ jobs:
           record: true
         env:
           CYPRESS_BROWSER: ${{ matrix.browser }}
-      
-      - name: Upload Reports as .zip Artifact
+
+      - name: Upload Reports as Artifact
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: cypress-reports-${{ matrix.browser }}
           path: cypress/reports
