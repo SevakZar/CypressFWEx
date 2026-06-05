@@ -2,6 +2,7 @@
 
 // Page objects
 import MainPage from '../../support/page-objects/main-page'
+import CartPage from '../../support/page-objects/cart-page'
 
 // Configurations
 const userKey = 'customer' //LoginUserAS
@@ -34,10 +35,10 @@ describe('Shopping cart Tests', { tags: ['@ui'] }, () => {
             expect($name.text().toLowerCase()).to.contain('claw hammer 16oz')
           })
         cy.step('ACT: Click Add to Cart')
-        cy.get('[data-testid="add-to-cart-btn"]').click()
+        cy.get(CartPage.addToCartBtn).click()
 
         cy.step('ASSERT: Cart badge updates to show quantity 1, success toast displayed')
-        cy.get('[data-id="cart-count"').should('be.visible').and('have.text', 1)
+        cy.get(CartPage.cartCount).should('be.visible').and('have.text', 1)
       })
   })
 
@@ -50,26 +51,26 @@ describe('Shopping cart Tests', { tags: ['@ui'] }, () => {
     cy.get(MainPage.searchQuery).click().type('Claw Hammer 16oz{enter}')
     cy.get(MainPage.searchButton).click()
     cy.step('ACT: Click Add to Cart')
-    cy.get('[data-testid="add-to-cart-btn"]').click()
-    cy.get('[data-id="cart-count"').should('be.visible').and('have.text', 1)
+    cy.get(CartPage.addToCartBtn).click()
+    cy.get(CartPage.cartCount).should('be.visible').and('have.text', 1)
 
     cy.step('ACT: Navigate to /checkout')
     cy.get(MainPage.cartButton).click()
 
-    const price = cy.get('[data-id="cart-item-total"]').invoke('text')
-    cy.get('[data-id="cart-item-total"]')
+    //const price = cy.get(CartPage.cartItemTotal).invoke('text')
+    cy.get(CartPage.cartItemTotal)
       .invoke('text')
       .then((text) => {
         const expectedPrice = Number(text.replace('$', '').trim()) * 3
 
         cy.step('ACT: Increase quantity to 3')
         Cypress._.times(2, () => {
-          cy.get('[data-testid="cart-qty-increase"]').click()
+          cy.get(CartPage.cartQtyIncrease).click()
         })
 
         cy.step('ASSERT: Quantity updated to 3, total price recalculated correctly')
-        cy.get('[data-testid="cart-quantity"]').should('have.text', 3)
-        cy.get('[data-id="cart-item-total"]')
+        cy.get(CartPage.cartQuantity).should('have.text', 3)
+        cy.get(CartPage.cartItemTotal)
           .invoke('text')
           .then((text) => {
             const actualPrice = Number(text.replace('$', '').trim())
@@ -87,17 +88,17 @@ describe('Shopping cart Tests', { tags: ['@ui'] }, () => {
     cy.get(MainPage.searchQuery).click().type('Claw Hammer 16oz{enter}')
     cy.get(MainPage.searchButton).click()
     cy.step('ACT: Click Add to Cart')
-    cy.get('[data-testid="add-to-cart-btn"]').click()
-    cy.get('[data-id="cart-count"').should('be.visible').and('have.text', 1)
+    cy.get(CartPage.addToCartBtn).click()
+    cy.get(CartPage.cartCount).should('be.visible').and('have.text', 1)
 
     cy.step('ACT: Navigate to /checkout')
     cy.get(MainPage.cartButton).click()
 
     cy.step('ACT: Click remove (×) button')
-    cy.contains('Claw Hammer 16oz').parents('[data-testid="cart-item"]').find('[data-testid="cart-remove"]').click()
+    cy.contains('Claw Hammer 16oz').parents(CartPage.cartItem).find(CartPage.cartRemove).click()
 
     cy.step('ASSERT: Product is removed from cart, cart becomes empty or badge decrements')
-    cy.get('[data-id="cart-empty"]').should('contain', 'Your cart is empty')
+    cy.get(CartPage.cartEmpty).should('contain', 'Your cart is empty')
     cy.get('body').should('not.contain', 'Claw Hammer 16oz')
   })
 })

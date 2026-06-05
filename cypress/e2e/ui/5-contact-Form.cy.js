@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 // Page objects
+import ContactForm from '../../support/page-objects/contact-form'
 
 // Configurations
 const userKey = 'customer' //LoginUserAS
@@ -15,7 +16,7 @@ describe('Contact Form Tests', { tags: ['@ui'] }, () => {
     cy.section('Test Setup')
     cy.step("ARRANGE: Don't Login user and visit home page")
     //cy.loginAs(userKey)
-    cy.visit('/') // {failOnStatusCode: false})  ?????
+    cy.visit('/') 
   })
 
   it('Submit contact form as guest - Question 12', { tags: ['@smoke', '@regression'] }, () => {
@@ -24,15 +25,15 @@ describe('Contact Form Tests', { tags: ['@ui'] }, () => {
     cy.get('[class="space-y-2 text-sm"] > li > [href="/contact"]').click()
 
     cy.step('ACT: Fill the fields')
-    cy.get('[data-testid="contact-name"]').type('Brad Pitt')
-    cy.get('[data-testid="contact-email"]').type('Brad_Pitt@gmail.com')
-    cy.get('[data-testid="contact-subject"]').type('Dont have any dropdown')
-    cy.get('[data-testid="contact-message"]').type('Test For Minimum 50 characters ++++++++++++++++++')
+    cy.get(ContactForm.contactName).type('Brad Pitt')
+    cy.get(ContactForm.contactEmail).type('Brad_Pitt@gmail.com')
+    cy.get(ContactForm.contactSubject).type('Dont have any dropdown')
+    cy.get(ContactForm.contactMessage).type('Test For Minimum 50 characters ++++++++++++++++++')
 
     cy.step('ACT: Submit the feedback')
-    cy.get('[data-testid="contact-submit"]').click()
+    cy.get(ContactForm.contactSubmit).click()
 
     cy.step('ASSERT: Form submitted successfully, confirmation message displayed')
-    cy.get('[data-id="contact-success-title"]').should('be.visible').and('have.text', 'Message Sent!')
+    cy.get(ContactForm.contactSuccessTitle).should('be.visible').and('have.text', 'Message Sent!')
   })
 })

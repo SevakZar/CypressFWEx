@@ -19,7 +19,7 @@ before(() => {
  * Used Gherkin Syntax + cy.step() for better logs and more clear test steps
  */
 describe('Authentication Tests', { tags: ['@ui'] }, () => {
-  context('When user is logged out', () => {
+  context('When user is not logged in', () => {
     it('Should login with valid credentials - Question 1', { tags: ['@smoke', '@regression'] }, () => {
       cy.step('GIVEN I am on the home page')
       cy.visit('/')
@@ -43,7 +43,7 @@ describe('Authentication Tests', { tags: ['@ui'] }, () => {
       cy.get(LoginPage.loginErrorMessage).should('be.visible').and('contain.text', 'Invalid credentials')
     })
 
-    it('Should not login with empty credentials', { tags: ['@regression'] }, () => {
+    it('Should not login with empty credentials - outside of practices just for practice', { tags: ['@regression'] }, () => {
       cy.step("GIVEN I'm in Login page")
       cy.visit('/auth/login')
       cy.step('WHEN I click the login without putting credentials')
@@ -63,7 +63,7 @@ describe('Authentication Tests', { tags: ['@ui'] }, () => {
       cy.visit('/')
     })
 
-    it('Should be able to logout', { tags: ['@regression'] }, () => {
+    it('Should be able to logout - outside of practices just for practice', { tags: ['@regression'] }, () => {
       cy.step('WHEN I logout')
       cy.get(MainPage.userMenuButton).click()
       cy.get(MainPage.logoutButton).click()
@@ -71,6 +71,8 @@ describe('Authentication Tests', { tags: ['@ui'] }, () => {
       cy.get(LoginPage.loginNavButton).should('be.visible')
     })
   })
+
+
   context('When want to register new user ', () => {
     const newRegisterPass = 'NewPass12345'
     const emailInput = 'New1@automationcamp.org'
@@ -84,7 +86,7 @@ describe('Authentication Tests', { tags: ['@ui'] }, () => {
       cy.get(LoginPage.firstnameInput).type('Micheal')
       cy.get(LoginPage.lastnameInput).type('White')
       cy.get(LoginPage.emailInput).type(emailInput)
-      cy.get(LoginPage.passwordInput).type(newRegisterPass)
+      cy.get(LoginPage.passwordInputRegister).type(newRegisterPass)
       cy.get(LoginPage.passwordConfirmInput).type(newRegisterPass)
       cy.get(LoginPage.phoneInput).type('09101020304')
       cy.get(LoginPage.dobInput).type('2000-02-20')

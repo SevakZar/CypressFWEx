@@ -17,7 +17,7 @@ describe('Product Tests', { tags: ['@ui'] }, () => {
     cy.section('Test Setup')
     cy.step('ARRANGE: Without Login user, visit home page')
     // cy.loginAs(userKey)
-    cy.visit('/') // {failOnStatusCode: false})  ?????
+    cy.visit('/')
   })
 
   it('Display products on home page - Question 4', { tags: ['@smoke', '@regression'] }, () => {
@@ -54,7 +54,7 @@ describe('Product Tests', { tags: ['@ui'] }, () => {
   it('Filter products by category - Question 6', { tags: ['@smoke', '@regression'] }, () => {
     cy.section('Test Body')
     cy.step('ACT: Select Drills (or Power Tools) from the category filter')
-    cy.get('[data-id="filter-category-power-tools"]').click()
+    cy.get(MainPage.filterCategoryPowerTools).click()
     cy.get(MainPage.productCard)
       .should('have.length.at.least', 1)
       .each(($category) => {
@@ -71,14 +71,12 @@ describe('Product Tests', { tags: ['@ui'] }, () => {
 
   it('Sort products by price (Low to High) - Question 7', { tags: ['@smoke', '@regression'] }, () => {
     cy.section('Test Body')
-    cy.intercept('GET', '/api/products?_sort=price&_order=asc&_page=1&_limit=9').as('priceSort') //the response time has delayed
+    cy.intercept('GET', '/api/products?_sort=price&_order=asc&_page=1&_limit=9').as('priceSort') //the response time for fetch the data and sort has delay (config a)
     cy.step('ACT: Select Price (Low - High) from sort dropdown')
-    cy.get('[data-testid="sort-select"]').select('Price Low-High')
-    cy.wait('@priceSort').its('response.statusCode').should('be.oneOf', [200, 304])
+    cy.get(MainPage.sortSelection).select('Price Low-High')
+    cy.wait('@priceSort').its('response.statusCode').should('be.oneOf', [200, 304]) //the response time for fetch the data and sort has delay (then config b)
 
-    cy.step(
-      'ASSERT: Products are sorted with lowest price first (e.g. Retractable Tape Measure 8m at $8.99 near the top)'
-    )
+    cy.step('ASSERT: Products are sorted with lowest price first (e.g. Retractable Tape Measure 8m at $8.99 near the top)')
     cy.get(MainPage.itemPrice)
       .should('have.length.at.least', 1)
       .then(($prices) => {

@@ -1,10 +1,19 @@
 # Cypress Test Automation Practice
 
-A Cypress test automation framework designed for multi-environment testing with support for UI and API testing.
-This framework Uses as template from **https://github.com/mmonfared/cypress-framework.git** by **Moe Monfared (https://github.com/mmonfared)**
+A Cypress test automation framework designed for multi-environment testing, supporting both UI and API test automation.
 
-This FrameWork Runs Test in an Application with this specifications:
-Application under test AutomationCamp Toolshop - Practice Test Automation: 
+This framework is based on the template provided by **Moe Monfared**:
+https://github.com/mmonfared/cypress-framework
+
+The project is fully integrated with GitHub Actions and includes a CI workflow that automatically executes tests on every push.
+
+Test execution results are recorded in Cypress Cloud under the project **"TaTa"**.
+
+An effort has been made to implement test cases using the **Arrange / Act / Assert (AAA)** pattern. 
+The first test file (1-authentication.cy.js), which was originally structured using the **Given / When / Then** pattern in Framework, has been kept in that format for consistency.
+
+This framework is designed to run automated tests against the **automationcamp-toolshop** application, which has the following specifications:
+
 ## Cypress \+ JavaScript Automation Framework
 
 **Template Framework:** [https://github.com/mmonfared/cypress-framework](https://github.com/mmonfared/cypress-framework)  
@@ -37,7 +46,8 @@ npm run reset-and-start
 ```
 Once you start the application, you may open your test framework in a separate IDE instance and start writing your tests.
 
-About FrameWork (as you can See in the main Git Repository **https://github.com/mmonfared/cypress-framework.git**):
+About FrameWork (as you can See in the main Git Repository):
+
 ## 🚀 Features
 
 - **Multi-Environment Support**: Separate configurations for Dev, QA, and Production environments

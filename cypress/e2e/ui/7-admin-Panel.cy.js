@@ -3,6 +3,7 @@
 // Page objects
 import LoginPage from '../../support/page-objects/login-page'
 import MainPage from '../../support/page-objects/main-page'
+import AdminDashboard from '../../support/page-objects/admin-dashboard'
 
 // Auth Configurations
 const userKey = 'admin' //LoginUserAS
@@ -37,16 +38,16 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
       cy.visit('/admin/brands')
 
       cy.step('ACT: Click Add Brand')
-      cy.get('[data-testid="add-brand"]').click()
+      cy.get(AdminDashboard.addBrand).click()
 
       cy.step('ACT: Fill brand name')
-      cy.get('[data-testid="brand-name"]').type(newBrand)
+      cy.get(AdminDashboard.brandName).type(newBrand)
 
       cy.step('ACT: Save')
-      cy.get('[data-testid="submit-brand"]').click()
+      cy.get(AdminDashboard.submitBrand).click()
 
       cy.step('ACT: For loading was a little bit slow')
-      cy.get('[data-testid="brand-row"]').eq(0).should('be.visible') //beacuse the service was slow in loading
+      cy.get(AdminDashboard.brandRow).eq(0).should('be.visible') //beacuse the service was slow in loading
 
       cy.step('ASSERT: New brand is created and appears in the brands list')
       cy.get('[data-testid="brands-table"]>tbody>tr>td:first-child').should('contain', newBrand)
@@ -57,7 +58,7 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
       cy.step('ACT: Navigate to /admin/brands')
       cy.visit('/admin/brands')
 
-      cy.get('[data-testid="brand-row"]').eq(0).should('be.visible')
+      cy.get(AdminDashboard.brandRow).eq(0).should('be.visible')
 
       cy.step('ACT: Delete inserted Brand')
       cy.window().then((win) => {
@@ -85,24 +86,24 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
       cy.visit('/admin/products')
 
       cy.step('ACT: Click Add product')
-      cy.get('[data-testid="add-product"]').click()
+      cy.get(AdminDashboard.addProduct).click()
 
       cy.step('ACT: Fill all required fields (name, description, price, stock, category, brand)')
-      cy.get('[data-testid="product-name"]').type(newProductName)
-      cy.get('[data-testid="product-description"]').type('For Question NUmber 15')
-      cy.get('[data-testid="product-price"]').type(20.02)
-      cy.get('[data-testid="product-stock"]').type(2)
-      cy.get('[data-testid="product-category"]').select('cat-3')
-      cy.get('[data-testid="product-brand"]').select('ForgeFlex')
+      cy.get(AdminDashboard.productName).type(newProductName)
+      cy.get(AdminDashboard.productDescription).type('For Question NUmber 15')
+      cy.get(AdminDashboard.productPrice).type(20.02)
+      cy.get(AdminDashboard.productStock).type(2)
+      cy.get(AdminDashboard.productCategory).select('cat-3')
+      cy.get(AdminDashboard.productBrand).select('ForgeFlex')
 
       cy.step('ACT: Save')
-      cy.get('[data-testid="submit-product"]').click()
+      cy.get(AdminDashboard.submitProduct).click()
 
       cy.step('ASSERT: As the for loading was a little bit slow')
-      cy.get('[data-testid="product-row"]').eq(0).should('be.visible')
+      cy.get(AdminDashboard.productRow).eq(0).should('be.visible')
 
       cy.step('ASSERT: New product is created and appears in the products list')
-      cy.get('[data-testid="search-products"]').type(`${newProductName}{enter}`)
+      cy.get(AdminDashboard.searchProducts).type(`${newProductName}{enter}`)
       cy.contains(newProductName).should('be.visible')
     })
 
@@ -112,7 +113,7 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
       cy.visit('/admin/products')
 
       cy.step('ASSERT: As the for loading was a little bit slow')
-      cy.get('[data-testid="product-row"]').eq(0).should('be.visible')
+      cy.get(AdminDashboard.productRow).eq(0).should('be.visible')
 
       cy.step('ACT: Delete inserted Product')
       cy.window().then((win) => {
@@ -122,7 +123,7 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
         }
       })
       cy.step('ACT: Find the inserted product')
-      cy.get('[data-testid="search-products"]').type(`${newProductName}{enter}`)
+      cy.get(AdminDashboard.searchProducts).type(`${newProductName}{enter}`)
       cy.get('button').contains('Delete').click()
 
       cy.step('ASSERT: new product Deleted Successfully')
@@ -138,22 +139,22 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
       cy.visit('/admin/orders')
 
       cy.step('ACT: Click on an order')
-      cy.get('[data-id="input-search-orders"]').type(`${invoiceNumber}{enter}`)
-      cy.get('[data-testid="view-order"]').should('have.length', 1).click()
+      cy.get(AdminDashboard.inputSearchOrders).type(`${invoiceNumber}{enter}`)
+      cy.get(AdminDashboard.viewOrder).should('have.length', 1).click()
 
       cy.step('ACT: Change status to SHIPPED')
-      cy.get('[data-testid="status-select"]').select('SHIPPED')
+      cy.get(AdminDashboard.statusSelect).select('SHIPPED')
 
       cy.step('ACT: update-status AND Go back to form for assertion')
-      cy.get('[data-testid="update-status"]').click()
-      cy.get('[data-id="btn-back-to-orders"]').click()
+      cy.get(AdminDashboard.updateStatus).click()
+      cy.get(AdminDashboard.btnBackToOrders).click()
 
       cy.step('ASSERT: As the for loading was a little bit slow')
-      cy.get('[data-testid="order-row"]').eq(0).should('be.visible')
+      cy.get(AdminDashboard.orderRow).eq(0).should('be.visible')
 
       cy.step('ASSERT: New product is created and appears in the products list')
-      cy.get('[data-id="input-search-orders"]').type(`${invoiceNumber}{enter}`)
-      cy.get('[data-id="order-status"]').should('have.length', 1).and('have.text', 'SHIPPED')
+      cy.get(AdminDashboard.inputSearchOrders).type(`${invoiceNumber}{enter}`)
+      cy.get(AdminDashboard.orderStatus).should('have.length', 1).and('have.text', 'SHIPPED')
     })
     after(() => {
       cy.section('Test Rollback Update order status')
@@ -162,22 +163,22 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
       cy.visit('/admin/orders')
 
       cy.step('ACT: Click on an order')
-      cy.get('[data-id="input-search-orders"]').type(`${invoiceNumber}{enter}`)
-      cy.get('[data-testid="view-order"]').should('have.length', 1).click()
+      cy.get(AdminDashboard.inputSearchOrders).type(`${invoiceNumber}{enter}`)
+      cy.get(AdminDashboard.viewOrder).should('have.length', 1).click()
 
       cy.step('ACT: Change status to SHIPPED')
-      cy.get('[data-testid="status-select"]').select('ON HOLD')
+      cy.get(AdminDashboard.statusSelect).select('ON HOLD')
 
       cy.step('ACT: update-status AND Go back to form for assertion')
-      cy.get('[data-testid="update-status"]').click()
-      cy.get('[data-id="btn-back-to-orders"]').click()
+      cy.get(AdminDashboard.updateStatus).click()
+      cy.get(AdminDashboard.btnBackToOrders).click()
 
       cy.step('ACT: As the for loading was a little bit slow')
-      cy.get('[data-testid="order-row"]').eq(0).should('be.visible')
+      cy.get(AdminDashboard.orderRow).eq(0).should('be.visible')
 
       cy.step('ASSERT: New product is created and appears in the products list')
-      cy.get('[data-id="input-search-orders"]').type(`${invoiceNumber}{enter}`)
-      cy.get('[data-id="order-status"]').should('have.length', 1).and('have.text', 'ON HOLD')
+      cy.get(AdminDashboard.inputSearchOrders).type(`${invoiceNumber}{enter}`)
+      cy.get(AdminDashboard.orderStatus).should('have.length', 1).and('have.text', 'ON HOLD')
     })
   })
 
@@ -189,22 +190,22 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
       cy.visit('/admin/users')
 
       cy.step('ACT: Edit customer3@automationcamp.org')
-      cy.contains(editUser).parent().find('[data-testid="edit-user"]').click()
+      cy.contains(editUser).parent().find(AdminDashboard.editUser).click()
       cy.url().should('include', '/admin/users/edit/') //beacuse the service was slow in loading
-      cy.get('[data-testid="email"]').should('have.value', editUser)
+      cy.get(AdminDashboard.email).should('have.value', editUser)
 
       cy.step('ACT: Set account to disabled')
-      cy.get('[data-testid="enabled"]').uncheck()
+      cy.get(AdminDashboard.enabled).uncheck()
 
       cy.step('ACT: Save')
-      cy.get('[data-testid="submit-user"]').click()
+      cy.get(AdminDashboard.submitUser).click()
 
       cy.step('ASSERT: User account is disabled')
-      cy.get('[data-testid="search-users"]').type(`${editUser}{enter}`)
+      cy.get(AdminDashboard.searchUsers).type(`${editUser}{enter}`)
       cy.contains(editUser)
         .should('be.visible')
         .parent()
-        .find('[data-id="btn-toggle-user-status"]')
+        .find(AdminDashboard.btnToggleUserStatus)
         .and('have.text', 'Disabled')
 
       cy.step('ACT: login attempt')
@@ -216,7 +217,7 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
       cy.get(LoginPage.passwordInput).type(password)
       cy.get(LoginPage.loginSubmitButton).click()
       cy.step('ASSERT: login attempt shows an appropriate error or is rejected')
-      cy.get('[data-testid="login-error"]').should('be.visible').and('have.text', 'Your account has been disabled.')
+      cy.get(LoginPage.loginErrorMessage).should('be.visible').and('have.text', 'Your account has been disabled.')
     })
     after(() => {
       cy.section('Test Rollback Disable user account')
@@ -227,22 +228,22 @@ describe('Admin Panel Tests', { tags: ['@ui'] }, () => {
       cy.visit('/admin/users')
 
       cy.step('ACT: Edit customer3@automationcamp.org')
-      cy.contains(editUser).parent().find('[data-testid="edit-user"]').click()
+      cy.contains(editUser).parent().find(AdminDashboard.editUser).click()
       cy.url().should('include', '/admin/users/edit/') //beacuse the service was slow in loading
-      cy.get('[data-testid="email"]').should('have.value', editUser).and('be.visible')
+      cy.get(AdminDashboard.email).should('have.value', editUser).and('be.visible')
 
       cy.step('ACT: Set account to Active')
-      cy.get('[data-testid="enabled"]').check()
+      cy.get(AdminDashboard.enabled).check()
 
       cy.step('ACT: Save')
-      cy.get('[data-testid="submit-user"]').click()
+      cy.get(AdminDashboard.submitUser).click()
 
       cy.step('ASSERT: User account is Active')
-      cy.get('[data-testid="search-users"]').type(`${editUser}{enter}`)
+      cy.get(AdminDashboard.searchUsers).type(`${editUser}{enter}`)
       cy.contains(editUser)
         .should('be.visible')
         .parent()
-        .find('[data-id="btn-toggle-user-status"]')
+        .find(AdminDashboard.btnToggleUserStatus)
         .and('have.text', 'Active')
     })
   })

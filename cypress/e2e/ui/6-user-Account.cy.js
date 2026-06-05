@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 // Page objects
+import MyProfile from '../../support/page-objects/my-profile'
 
 // Configurations
 const userKey = 'customer' //LoginUserAS
@@ -23,16 +24,16 @@ describe('User Account Tests', { tags: ['@ui'] }, () => {
     cy.section('Test Body')
     cy.step('ASSERT: User details are displayed (name, email, phone, address, DOB)')
     cy.step('ASSERT: first-name')
-    cy.get('[data-testid="first-name"]').should('be.visible').and('not.have.value', '')
+    cy.get(MyProfile.firstname).should('be.visible').and('not.have.value', '')
     cy.step('ASSERT: last-name')
-    cy.get('[data-testid="last-name"]').should('be.visible').and('not.have.value', '')
+    cy.get(MyProfile.lastname).should('be.visible').and('not.have.value', '')
     cy.step('ASSERT: email')
-    cy.get('[data-testid="email"]').should('be.visible').and('not.have.value', '')
+    cy.get(MyProfile.email).should('be.visible').and('not.have.value', '')
     cy.step('ASSERT: phone')
-    cy.get('[data-testid="phone"]').should('be.visible').and('not.have.value', '')
+    cy.get(MyProfile.phone).should('be.visible').and('not.have.value', '')
     cy.step('ASSERT: Adress(street)')
-    cy.get('[data-testid="street"]').should('be.visible').and('not.have.value', '')
+    cy.get(MyProfile.street).should('be.visible').and('not.have.value', '')
     cy.step('ASSERT: Date of Birth')
-    cy.get('[data-testid="dob"]').should('be.visible').and('not.have.value', '')
+    cy.get(MyProfile.dob).should('be.visible').and('not.have.value', '')
   })
 })
